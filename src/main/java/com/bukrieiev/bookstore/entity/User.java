@@ -1,21 +1,35 @@
 package com.bukrieiev.bookstore.entity;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
-import java.rmi.server.UID;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class User {
 
     @Id
     @Column(name = "id", nullable = false)
-    private UID id;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Getter
+    private Long id;
 
-    @Column(name = "login", nullable = false)
-    private String login;
+    @NonNull
+    @Getter
+    @Setter
+    @Column(name = "email", nullable = false)
+    private String email;
 
+    @NonNull
+    @Getter
+    @Setter
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -25,6 +39,29 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "role", nullable = false)
-    private String role;
+//    @NonNull
+//    @Getter
+//    @Setter
+//    @Column(name = "role", nullable = false)
+//    private Role role;
+
+    @NonNull
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+
+
+    @NonNull
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="userInformation")
+//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//    @JsonIdentityReference(alwaysAsId = true)
+    private UserInformation userInformation;
 }

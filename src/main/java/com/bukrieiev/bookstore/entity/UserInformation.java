@@ -1,25 +1,30 @@
 package com.bukrieiev.bookstore.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.rmi.server.UID;
+import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="user_information")
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class UserInformation {
 
     @Id
+    @Getter
     @Column(name = "id", nullable = false)
-    private UID id;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "username", nullable = false)
-    private String username;
-
+    @NonNull
+    @Getter
+    @Setter
     @Column(name = "birthday")
     private String birthday;
 
+    @NonNull
+    @Getter
+    @Setter
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
