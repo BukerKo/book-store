@@ -21,6 +21,7 @@ public class UserInformation {
     private String birthday;
 
     @Column(name = "gender")
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
 }

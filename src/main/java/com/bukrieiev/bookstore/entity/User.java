@@ -19,6 +19,12 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @NonNull
+    @Getter
+    @Setter
+    @Column(name = "username", nullable = false)
+    private String username;
+
     @Column(name = "role", nullable = false)
     private String role;
 }
