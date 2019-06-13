@@ -1,7 +1,6 @@
 package com.bukrieiev.bookstore.controller;
 
 import com.bukrieiev.bookstore.dao.RoleRepository;
-import com.bukrieiev.bookstore.dao.UserRepository;
 import com.bukrieiev.bookstore.entity.*;
 import com.bukrieiev.bookstore.exception.AppException;
 import com.bukrieiev.bookstore.payload.ApiResponse;
@@ -10,6 +9,7 @@ import com.bukrieiev.bookstore.payload.LoginRequest;
 import com.bukrieiev.bookstore.payload.SignUpRequest;
 import com.bukrieiev.bookstore.security.JwtTokenProvider;
 import com.bukrieiev.bookstore.service.UserService;
+import com.bukrieiev.bookstore.util.ApiUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +18,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -49,17 +54,17 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, ApiUtil.getRoleFromAuthorities(authentication.getAuthorities())));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if(userService.existsByUsername(signUpRequest.getUsername())) {
+        if (userService.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
         }
 
-        if(userService.existsByEmail(signUpRequest.getEmail())) {
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
@@ -72,7 +77,6 @@ public class AuthController {
 
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
-
 
 
         user.setRoles(Collections.singleton(userRole));
