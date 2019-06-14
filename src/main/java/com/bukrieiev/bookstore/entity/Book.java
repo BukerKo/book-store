@@ -1,18 +1,15 @@
 package com.bukrieiev.bookstore.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.lang.NonNullFields;
 
 import javax.persistence.*;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "book")
 public class Book {
-
-    private static final String SAMPLE_BOOK_PHOTO_URL = "http://clipart-library.com/images/8TGbezyAc.jpg";
 
     @Id
     @Column(name = "id", nullable = false)
@@ -23,8 +20,8 @@ public class Book {
     @NonNull
     @Getter
     @Setter
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @NonNull
     @Getter
@@ -35,8 +32,8 @@ public class Book {
     @NonNull
     @Getter
     @Setter
-    @Column(name = "username", nullable = false)
-    private Boolean enabled = true;
+    @Column(name = "visible", nullable = false)
+    private Boolean visible;
 
     @NonNull
     @Getter
@@ -48,5 +45,5 @@ public class Book {
     @Getter
     @Setter
     @Column(name = "photo", nullable = false)
-    private String photo = SAMPLE_BOOK_PHOTO_URL;
+    private String photo;
 }
