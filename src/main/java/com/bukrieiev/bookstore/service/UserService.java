@@ -3,8 +3,12 @@ package com.bukrieiev.bookstore.service;
 import com.bukrieiev.bookstore.dao.UserInformationRepository;
 import com.bukrieiev.bookstore.dao.UserRepository;
 import com.bukrieiev.bookstore.entity.User;
+import com.bukrieiev.bookstore.entity.UserInformation;
 import lombok.AllArgsConstructor;
+import org.hibernate.Hibernate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -14,6 +18,28 @@ public class UserService {
 
     UserInformationRepository userInformationRepository;
     UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
+
+
+    public User updateUser(User user) {
+        User userFromDb = userRepository.findByUsername(user.getUsername()).get();
+        Hibernate.initialize(userFromDb.getUserInformation());
+        UserInformation userInformationFromDb = userFromDb.getUserInformation();
+
+        UserInformation userInformation = user.getUserInformation();
+        userInformationFromDb.setBirthday(userInformation.getBirthday());
+        userInformationFromDb.setGender(userInformation.getGender());
+        UserInformation userInformationResult =  userInformationRepository.save(userInformationFromDb);
+
+        userFromDb.setPassword(passwordEncoder.encode(user.getPassword()));
+        userFromDb.setEmail(user.getEmail());
+        userFromDb.setUserInformation(userInformationFromDb);
+
+        User userResult = userRepository.save(userFromDb);
+        userResult.setUserInformation(userInformationResult);
+
+        return userRepository.save(userResult);
+    }
 
     public User getUser(String email, String password) {
         Optional<User> user = userRepository.findByEmailAndPassword(email, password);

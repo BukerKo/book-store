@@ -10,7 +10,6 @@ public class ApiUtil {
 
     public static RoleName getRoleFromAuthorities(Collection<? extends GrantedAuthority> authorities) {
         String role = String.valueOf(Arrays.stream(authorities.toArray()).findFirst().get());
-        RoleName roleName = RoleName.valueOf(role);
-        return roleName;
+        return RoleName.valueOf(role);
     }
 }

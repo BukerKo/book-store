@@ -1,8 +1,5 @@
 package com.bukrieiev.bookstore.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,12 +35,6 @@ public class User {
     @Setter
     @Column(name = "username", nullable = false)
     private String username;
-
-//    @NonNull
-//    @Getter
-//    @Setter
-//    @Column(name = "role", nullable = false)
-//    private Role role;
 
     @NonNull
     @Getter
