@@ -27,7 +27,7 @@ public class Book {
     @Getter
     @Setter
     @Column(name = "quantity", nullable = false)
-    private String quantity;
+    private Long quantity;
 
     @NonNull
     @Getter

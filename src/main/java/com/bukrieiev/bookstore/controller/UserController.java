@@ -32,10 +32,9 @@ public class UserController {
     @GetMapping("/user/me")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
 
-        UserSummary userSummary = new UserSummary(currentUser.getId(),
+        return new UserSummary(currentUser.getId(),
                 currentUser.getUsername(),
                 ApiUtil.getRoleFromAuthorities(currentUser.getAuthorities()));
-        return userSummary;
     }
 
     @PostMapping(value = "/user/update", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})

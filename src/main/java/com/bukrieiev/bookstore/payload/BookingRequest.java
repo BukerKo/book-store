@@ -1,12 +1,12 @@
 package com.bukrieiev.bookstore.payload;
 
 
-import com.bukrieiev.bookstore.entity.Book;
+import com.bukrieiev.bookstore.dto.BookIdToCount;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Set;
+import java.util.List;
 
 public class BookingRequest {
 
@@ -18,5 +18,8 @@ public class BookingRequest {
     @Getter
     @Setter
     @NotBlank
-    private Set<Book> books;
+    private List<BookIdToCount> books;
+
+
+
 }

@@ -41,6 +41,11 @@ public class UserService {
         return userRepository.save(userResult);
     }
 
+    public User getUserWithLoadedUserInf(Long id) {
+        User user = userRepository.findByIdAndFetchUserInfEagerly(id);
+        return user;
+    }
+
     public User getUser(String email, String password) {
         Optional<User> user = userRepository.findByEmailAndPassword(email, password);
         return user.orElse(null);
