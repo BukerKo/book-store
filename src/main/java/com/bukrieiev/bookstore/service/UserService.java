@@ -6,10 +6,13 @@ import com.bukrieiev.bookstore.entity.User;
 import com.bukrieiev.bookstore.entity.UserInformation;
 import lombok.AllArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +22,10 @@ public class UserService {
     UserInformationRepository userInformationRepository;
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+
+    public List<User> findAll(Pageable page) {
+        return userRepository.findAll(page).getContent();
+    }
 
 
     public User updateUser(User user) {
@@ -42,8 +49,7 @@ public class UserService {
     }
 
     public User getUserWithLoadedUserInf(Long id) {
-        User user = userRepository.findByIdAndFetchUserInfEagerly(id);
-        return user;
+        return userRepository.findByIdAndFetchUserInfEagerly(id);
     }
 
     public User getUser(String email, String password) {
@@ -53,7 +59,12 @@ public class UserService {
 
     public User persist(User user) {
         userInformationRepository.save(user.getUserInformation());
-        return userRepository.save(user);
+        User resp = userRepository.save(user);
+        return resp;
+    }
+
+    public void delete(Long id) {
+        userRepository.deleteById(id);
     }
 
     public Boolean existsByUsername(String username) {
