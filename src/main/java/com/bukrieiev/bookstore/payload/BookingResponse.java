@@ -15,7 +15,7 @@ public class BookingResponse {
 
     @Getter
     @Setter
-    private String price;
+    private Long price;
 
     @Getter
     @Setter

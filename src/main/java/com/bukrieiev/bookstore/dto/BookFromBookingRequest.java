@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-public class BookIdToCount {
+public class BookFromBookingRequest {
 
     @Getter
     @Setter

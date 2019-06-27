@@ -2,10 +2,7 @@ package com.bukrieiev.bookstore.payload;
 
 import com.bukrieiev.bookstore.entity.RoleName;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 public class JwtAuthenticationResponse {
 

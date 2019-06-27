@@ -3,7 +3,6 @@ package com.bukrieiev.bookstore.security;
 import com.bukrieiev.bookstore.dao.UserRepository;
 import com.bukrieiev.bookstore.entity.User;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

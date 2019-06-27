@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -23,14 +23,14 @@ public class UserService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
 
-    public List<User> findAll(Pageable page) {
-        return userRepository.findAll(page).getContent();
+    public Page<User> findAll(Pageable page) {
+        return userRepository.findAll(page);
     }
 
 
     public User updateUser(User user) {
-        User userFromDb = userRepository.findByUsername(user.getUsername()).get();
-        Hibernate.initialize(userFromDb.getUserInformation());
+        User userFromDb = userRepository.findByUsername(user.getUsername()).orElse(null);
+        Hibernate.initialize(Objects.requireNonNull(userFromDb).getUserInformation());
         UserInformation userInformationFromDb = userFromDb.getUserInformation();
 
         UserInformation userInformation = user.getUserInformation();
@@ -52,19 +52,14 @@ public class UserService {
         return userRepository.findByIdAndFetchUserInfEagerly(id);
     }
 
-    public User getUser(String email, String password) {
-        Optional<User> user = userRepository.findByEmailAndPassword(email, password);
-        return user.orElse(null);
-    }
-
     public User persist(User user) {
         userInformationRepository.save(user.getUserInformation());
-        User resp = userRepository.save(user);
-        return resp;
+        return userRepository.save(user);
     }
 
-    public void delete(Long id) {
-        userRepository.deleteById(id);
+    @Transactional
+    public void deleteByIdIn(List<Long> ids) {
+        userRepository.deleteByIdIn(ids);
     }
 
     public Boolean existsByUsername(String username) {

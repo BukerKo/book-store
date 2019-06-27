@@ -1,7 +1,6 @@
 package com.bukrieiev.bookstore.dto;
 
 import com.bukrieiev.bookstore.entity.Gender;
-import com.bukrieiev.bookstore.entity.Role;
 import com.bukrieiev.bookstore.entity.RoleName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +9,11 @@ import lombok.Setter;
 
 @AllArgsConstructor
 public class MainUserInformation {
+    @Getter
+    @Setter
+    @NonNull
+    private Long id;
+
     @Getter
     @Setter
     @NonNull

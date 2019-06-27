@@ -11,7 +11,6 @@ import com.bukrieiev.bookstore.security.JwtTokenProvider;
 import com.bukrieiev.bookstore.service.UserService;
 import com.bukrieiev.bookstore.util.ApiUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,9 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -59,13 +56,13 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (userService.existsByUsername(signUpRequest.getUsername())) {
-            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
-                    HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "Username is already taken!"));
         }
 
         if (userService.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
-                    HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "Email Address already in use!"));
         }
 
         // Creating user's account

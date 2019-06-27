@@ -1,7 +1,6 @@
 package com.bukrieiev.bookstore.entity;
 
 import lombok.*;
-import org.springframework.lang.NonNullFields;
 
 import javax.persistence.*;
 

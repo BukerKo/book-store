@@ -1,23 +1,18 @@
 package com.bukrieiev.bookstore.controller;
 
 import com.bukrieiev.bookstore.dao.RoleRepository;
-import com.bukrieiev.bookstore.dao.UserInformationRepository;
 import com.bukrieiev.bookstore.dto.MainUserInformation;
 import com.bukrieiev.bookstore.entity.Role;
-import com.bukrieiev.bookstore.entity.RoleName;
 import com.bukrieiev.bookstore.entity.User;
 import com.bukrieiev.bookstore.entity.UserInformation;
-import com.bukrieiev.bookstore.payload.AllUserResponse;
+import com.bukrieiev.bookstore.payload.AllUsersResponse;
 import com.bukrieiev.bookstore.payload.UserSummary;
 import com.bukrieiev.bookstore.security.CurrentUser;
 import com.bukrieiev.bookstore.security.UserPrincipal;
 import com.bukrieiev.bookstore.service.UserService;
 import com.bukrieiev.bookstore.util.ApiUtil;
-import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
-import org.hibernate.mapping.Collection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -38,22 +32,22 @@ public class UserController {
 
     private UserService userService;
     private RoleRepository roleRepository;
-    private UserInformationRepository userInformationRepository;
-
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/user")
     public ResponseEntity<?> getAllUsers(@NotNull final Pageable page) {
-        List<User> users = userService.findAll(page);
-        List<AllUserResponse> response = users.stream()
-                .map(user -> new AllUserResponse(
+        Page<User> userPage = userService.findAll(page);
+        List<User> users = userPage.getContent();
+        Long totalUsers = userPage.getTotalElements();
+        int totalPages = userPage.getTotalPages();
+        List<MainUserInformation> response = users.stream()
+                .map(user -> new MainUserInformation(
                         user.getId(),
                         user.getUsername(),
-                        ((Role) user.getRoles().toArray()[0]).getName(),
+                        user.getEmail(),
                         user.getUserInformation().getGender(),
-                        user.getEmail()))
+                        ((Role) user.getRoles().toArray()[0]).getName()))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new AllUsersResponse(response, totalUsers, totalPages));
     }
 
     @PutMapping("/user/{id}")
@@ -64,7 +58,7 @@ public class UserController {
 
         userFromDb.setEmail(mainUserInformation.getEmail());
         userFromDb.setUsername(mainUserInformation.getUsername());
-        userFromDb.setRoles(new HashSet<>(Collections.singletonList(roleRepository.findByName(mainUserInformation.getRole()).get())));
+        userFromDb.setRoles(new HashSet<>(Collections.singletonList(roleRepository.findByName(mainUserInformation.getRole()).orElse(null))));
 
         return ResponseEntity.ok(userService.persist(userFromDb));
 
@@ -84,9 +78,9 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
-    @DeleteMapping(value="/user/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
-        userService.delete(id);
+    @PostMapping(value = "/user/delete")
+    public ResponseEntity<?> deleteUser(@RequestBody List<Long> ids) {
+        userService.deleteByIdIn(ids);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

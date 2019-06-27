@@ -1,12 +1,10 @@
 package com.bukrieiev.bookstore.entity;
 
 import lombok.*;
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,17 +28,6 @@ public class Booking {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Date createdAt;
-//
-//    @NonNull
-//    @ManyToMany(fetch = FetchType.EAGER,
-//    cascade = CascadeType.DETACH)
-//    @JoinTable(name = "booking_books",
-//            joinColumns = @JoinColumn(name = "booking_id"),
-//            inverseJoinColumns = @JoinColumn(name = "book_id"))
-//    @Getter
-//    @Setter
-//    private Set<Book> books;
-
 
     @NonNull
     @Getter
@@ -59,9 +46,9 @@ public class Booking {
     @Getter
     @Setter
     @Column(name = "total_price", nullable = false)
-    private String totalPrice;
+    private Long totalPrice;
 
-    public Booking(@NonNull User user, @NonNull String totalPrice) {
+    public Booking(@NonNull User user, @NonNull Long totalPrice) {
         this.user = user;
         this.totalPrice = totalPrice;
         this.bookingBooks = new HashSet<>();

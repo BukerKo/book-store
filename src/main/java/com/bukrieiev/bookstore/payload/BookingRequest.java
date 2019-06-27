@@ -1,7 +1,7 @@
 package com.bukrieiev.bookstore.payload;
 
 
-import com.bukrieiev.bookstore.dto.BookIdToCount;
+import com.bukrieiev.bookstore.dto.BookFromBookingRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,12 +13,7 @@ public class BookingRequest {
     @Getter
     @Setter
     @NotBlank
-    private String totalPrice;
-
-    @Getter
-    @Setter
-    @NotBlank
-    private List<BookIdToCount> books;
+    private List<BookFromBookingRequest> books;
 
 
 
