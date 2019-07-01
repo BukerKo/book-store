@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @RepositoryRestResource
@@ -26,7 +27,8 @@ public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
     @RequestMapping(path = "/visible", method = RequestMethod.GET)
     Page<Book> findBooksByVisibleTrue(Pageable pageable);
 
-    //TODO add multiplication on quantity
-    @Query("SELECT SUM(b.price+0) FROM Book b WHERE b.id IN ?1")
-    Long countTotalPriceByIds(Collection<Long> ids);
+    List<Book> findByIdIn(Collection<Long> ids);
+//    //TODO add multiplication on quantity
+//    @Query("SELECT b.price+0 FROM Book b WHERE b.id IN ?1")
+//    List<Long> findPricesByIds(Collection<Long> ids);
 }

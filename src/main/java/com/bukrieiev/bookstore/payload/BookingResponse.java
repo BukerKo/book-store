@@ -15,10 +15,11 @@ public class BookingResponse {
 
     @Getter
     @Setter
-    private Long price;
+    private Double price;
 
     @Getter
     @Setter
     private String date;
+
 
 }

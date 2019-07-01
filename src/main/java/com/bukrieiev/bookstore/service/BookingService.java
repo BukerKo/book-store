@@ -42,7 +42,7 @@ public class BookingService {
                 .collect(Collectors.toMap(BookFromBookingRequest::getId, BookFromBookingRequest::getCount));
         Set<Book> updatedBooks = bookService.updateBooksQuantity(bookIdToCount);
 
-        Long totalPrice = bookService.countTotalPriceByIds(bookIdToCount.keySet());
+        Double totalPrice = bookService.countTotalPriceByIds(bookIdToCount);
         Booking booking = new Booking(ApiUtil.getCurrentUser(), totalPrice);
 
         List<BookingBook> bookingBooks = bookIdToCount.entrySet().stream().map(entry -> new BookingBook(
@@ -56,6 +56,10 @@ public class BookingService {
 
         savedBooking.setBookingBooks(new HashSet<>());
         return savedBooking;
+    }
+
+    public Long getBookingsCount(){
+        return bookingRepository.count();
     }
 
 

@@ -19,7 +19,7 @@ public class Book {
     @NonNull
     @Getter
     @Setter
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, unique = true)
     private String title;
 
     @NonNull
@@ -38,7 +38,7 @@ public class Book {
     @Getter
     @Setter
     @Column(name = "price", nullable = false)
-    private String price;
+    private Double price;
 
     @NonNull
     @Getter

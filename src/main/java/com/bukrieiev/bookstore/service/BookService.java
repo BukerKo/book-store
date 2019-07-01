@@ -6,8 +6,10 @@ import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,8 +22,11 @@ public class BookService {
         return Sets.newHashSet(bookRepository.saveAll(booksFromDb));
     }
 
-    public Long countTotalPriceByIds(Set<Long> bookIds) {
-        return bookRepository.countTotalPriceByIds(bookIds);
+    public Double countTotalPriceByIds(Map<Long, Long> bookIdToCount) {
+        List<Book> books = bookRepository.findByIdIn(bookIdToCount.keySet());
+        return books.stream()
+                .map(book -> book.getPrice()*bookIdToCount.get(book.getId()))
+                .reduce(0d, Double::sum);
     }
 
     public Set<Book> findBooksById(Iterable<Long> ids) {

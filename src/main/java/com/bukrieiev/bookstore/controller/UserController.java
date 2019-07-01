@@ -6,6 +6,7 @@ import com.bukrieiev.bookstore.entity.Role;
 import com.bukrieiev.bookstore.entity.User;
 import com.bukrieiev.bookstore.entity.UserInformation;
 import com.bukrieiev.bookstore.payload.AllUsersResponse;
+import com.bukrieiev.bookstore.payload.SuccessfulDelete;
 import com.bukrieiev.bookstore.payload.UserSummary;
 import com.bukrieiev.bookstore.security.CurrentUser;
 import com.bukrieiev.bookstore.security.UserPrincipal;
@@ -40,12 +41,7 @@ public class UserController {
         Long totalUsers = userPage.getTotalElements();
         int totalPages = userPage.getTotalPages();
         List<MainUserInformation> response = users.stream()
-                .map(user -> new MainUserInformation(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getEmail(),
-                        user.getUserInformation().getGender(),
-                        ((Role) user.getRoles().toArray()[0]).getName()))
+                .map(MainUserInformation::new)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(new AllUsersResponse(response, totalUsers, totalPages));
     }
@@ -75,13 +71,13 @@ public class UserController {
     @PostMapping(value = "/user/update", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         User updatedUser = userService.updateUser(user);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        return ResponseEntity.ok(updatedUser);
     }
 
-    @PostMapping(value = "/user/delete")
+    @PostMapping(value = "/user/delete", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> deleteUser(@RequestBody List<Long> ids) {
         userService.deleteByIdIn(ids);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(new SuccessfulDelete());
     }
 
 }

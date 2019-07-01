@@ -46,9 +46,9 @@ public class Booking {
     @Getter
     @Setter
     @Column(name = "total_price", nullable = false)
-    private Long totalPrice;
+    private Double totalPrice;
 
-    public Booking(@NonNull User user, @NonNull Long totalPrice) {
+    public Booking(@NonNull User user, @NonNull Double totalPrice) {
         this.user = user;
         this.totalPrice = totalPrice;
         this.bookingBooks = new HashSet<>();

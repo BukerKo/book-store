@@ -4,10 +4,10 @@ import com.bukrieiev.bookstore.dto.BookTitleToCount;
 import com.bukrieiev.bookstore.entity.Booking;
 import com.bukrieiev.bookstore.payload.BookingRequest;
 import com.bukrieiev.bookstore.payload.BookingResponse;
-import com.bukrieiev.bookstore.service.BookService;
 import com.bukrieiev.bookstore.service.BookingService;
 import com.bukrieiev.bookstore.util.ApiUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BookingController {
 
-    private BookService bookService;
     private BookingService bookingService;
 
     @PostMapping
@@ -35,8 +34,8 @@ public class BookingController {
     public List<BookingResponse> getBookings(@NotNull final Pageable page) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
         Long userId = ApiUtil.getCurrentUser().getId();
-        List<Booking> bookings = bookingService.findByUserId(page, userId).getContent();
-        return bookings.stream().map(item -> {
+        Page<Booking> bookings = bookingService.findByUserId(page, userId);
+        return bookings.getContent().stream().map(item -> {
             BookingResponse response = new BookingResponse();
             response.setDate(dateFormatter.format(item.getCreatedAt()));
             response.setPrice(item.getTotalPrice());
@@ -44,6 +43,11 @@ public class BookingController {
                     new BookTitleToCount(entry.getBook().getTitle(), entry.getCount())).collect(Collectors.toList()));
             return response;
         }).collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/totalCount")
+    public Long getBookingsCount() {
+        return bookingService.getBookingsCount();
     }
 
 
